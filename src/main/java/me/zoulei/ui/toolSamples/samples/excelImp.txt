@@ -1,0 +1,425 @@
+//批量导入例子
+//按钮
+<el-button size="mini" v-if="treeid" @click="importVisible = true">
+  <img class="icon" src="~@/assets/imgs/zzgb/gbtp/import.png" alt="" />
+  &nbsp;批量导入
+</el-button>
+
+//导入页面显隐控制属性
+importVisible:true,
+
+//引入导入页面
+const bcxxImport = ()=> import('./bcxxImport.vue'); //导入
+
+//窗体展示
+<epl-window
+	:hasHelp="false"
+	title="补充信息数据导入"
+	:width="600"
+	:height="331"
+	:visible.sync="importVisible"
+>
+   <bcxxImport v-if="importVisible" :b0111="treeid" @refresh="reloadBCXX" @close="importVisible=false"></bcxxImport>
+</epl-window>
+
+//模板导出接口
+/**
+ * 获取导入文件模板下载路径
+ * @return
+ */
+@PostMapping("/getTemplateDownUrl")
+@SystemLog
+@CrossOrigin(methods = {RequestMethod.POST},origins = "*")
+public ResponseMessage getTemplateDownUrl(){
+	long start = System.currentTimeMillis();
+	String fileName = "bcxxpldr.xlsx";
+	String filePath = DownFileDirUtil.getContextPath(EHyFile.EXPORTEXCEL, fileName);
+	File file = new File(filePath);
+	if(!file.exists()){
+		return ResponseMessage.error("导入模板文件不存在！");
+	}
+	
+	JSONObject obj = new JSONObject();
+	obj.put("path", FilePathStoreUtil.storePath(file.getAbsolutePath()));
+	obj.put("filename","XX单位人员补充信息批量导入.xlsx");
+	
+	long end = System.currentTimeMillis();
+	return ResponseMessage.ok("1",obj);
+}
+
+//导入页面bcxxImport.vue
+<template>
+  <div class="question-import">
+    <p class="tip">
+        1：导入的Excel文件格式必须与填写模板一致，否则不能导入！
+    </p>
+    <p class="tip">
+        2：如果是直接从系统导出的模板文件，请重新保存再导入！
+    </p>
+    <el-button type='primary' class="download-btn"  @click="downloadFile">下载模板文件</el-button>
+    <div class="upFile">
+        <el-button class="up-btn" size="small" type="success">
+            选取文件
+            <input type="file" ref="fileInput" @change="fileChage" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        </el-button>
+    </div>
+    <p class="select-file">{{ fileName }}</p>
+    <footer class="dia-footer">
+        <el-button size="mini" @click="save">
+          <img class="icon" src="@/assets/imgs/zzgb/import.svg" alt="" />
+            &nbsp;导入
+        </el-button>
+        <el-button size="mini" @click="calcel">
+            <span class="svg_icon el-icon-gwy-close r"></span>
+             &nbsp;关闭
+        </el-button>
+    </footer>
+  </div>
+</template>
+<script>
+import { API_ROOT } from "@/config";
+export default {
+    name:'drry',
+    props:{
+        b0111:{
+            type: String,
+            default:''
+        }
+    },
+    data(){
+        return {
+            fileName:'',
+ 
+        }
+    },
+    created(){
+         
+    },
+    methods:{
+        // 下载模板
+        downloadFile(){
+            this.$api.commonPost('/business/QGGWY/QGGWY_JCK001/QGGWY_JCK001_0006/BaCustomQueryByCy/getTemplateDownUrl',{}).then(res=>{
+                console.log(res)
+                if(res.status == '0'){
+                    let url = API_ROOT + '/servlet/commonDownServlet?method=downFile&prid=' + encodeURI(encodeURI(res.data.path)) + '&realfilename=' + encodeURI(encodeURI(res.data.filename));
+                    let link = document.createElement('a');
+                    link.style.display = 'none';
+                    link.href = url;
+                    link.click();
+                }
+            })
+        },
+        fileChage(a){
+            this.fileName = a.target.files[0].name
+        },
+        save(){
+            if(!this.fileName){
+                this.$message({
+                    type: "error",
+                    message: '请选择要上传的文件！'
+                })
+                return
+            }
+            let formData = new FormData();
+            let file = this.$refs.fileInput.files[0]
+            formData.append("file", file);
+            formData.append("b0111", this.b0111);
+            axios({
+                    method: "post",
+                    url: "/business/QGGWY/QGGWY_JCK001/QGGWY_JCK001_0006/BaCustomQueryByCy/importExcel",
+                    data: formData,
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                .then((res) => {
+                    if (res.status == "0") {
+                        this.$message({
+                            message: "导入成功！",
+                            type: "success",
+                        });
+                        this.$emit('refresh')
+                        this.$emit('close')
+                    } else {
+                        this.$message.error(res.message);
+                    }
+                })
+                .catch((res) => {
+                    this.$message.error("导入错误");
+                });
+        },
+        calcel(){
+            this.$emit('close')
+        }
+    }
+}
+</script>
+
+<style lang="less">
+.question-import{
+    position: relative;
+    .tip{
+        height: 37px;
+        padding: 16px 32px 0px;
+        color: red;
+    }
+    .download-btn{
+        margin: 16px 32px;
+    }
+    .upFile{
+        position: relative;
+        margin: 0px 32px 16px;
+        .up-btn{
+            position: relative;
+            input{
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 100;
+                opacity: 0;
+            }
+        }
+    }
+    .select-file{
+        position: relative;
+        padding: 8px 32px;
+        height: 48px;
+    }
+    .dia-footer{
+        position: relative;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        background-color: rgb(217, 234, 255);
+        justify-content: flex-end;
+        padding-right: 10px;
+    }
+}
+</style>
+
+
+//导入后台实现
+/**
+ * 批量导入 接口
+ */
+@PostMapping("/importExcel")
+@CrossOrigin(methods = {RequestMethod.POST},origins = "*")
+public ResponseMessage importExcel(String b0111,@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+
+    try {
+    	JSONObject pageData = new JSONObject();
+    	pageData.put("b0111", b0111);
+        service.importExcel(file,pageData);
+    }catch (Exception e){
+        e.printStackTrace();
+        return SelfWaringUtil.dealException(e,null);
+    }
+    return ResponseMessage.ok();
+}
+
+	/**
+	 * 批量导入人员补充信息和专业技术资格
+	 * @param file
+	 * @param pageData
+	 */
+	@Transactional
+	public void importExcel(MultipartFile file, JSONObject pageData) throws Exception {
+		//去空格
+		Function<String, String> fn1 = v->v==null?"":v.replaceAll("\\s+", "");
+		//去空格和日期处理
+		Function<String, String> fn2 = v->v==null?"":v.replaceAll("[\\.。、]|\\s+", "");
+		
+		//本单位人员
+		String b0111 = pageData.getString("b0111");
+		List<XFBCXXDto> bcxxList = baCustomQueryByCyDao.getBCXXList(currentUserService.getCurrentUserId(), b0111);
+		//Map<String, String> a0184Map = bcxxList.stream().map(bcxx->new String[] {bcxx.getA0184(),bcxx.getA0101()}).collect(Collectors.toMap(k -> k[0], v -> v[1]));
+		Map<String, XFBCXXDto> a0184Map = bcxxList.stream().collect(Collectors.toMap(k -> k.getA0184(), v -> v));
+		//System.out.println("collect：" + collect);
+		ExcelReader excelReader = EasyExcel.read(file.getInputStream()).build();
+		
+		//一次性读取多个sheet页
+        ReadSheet sheet1 = EasyExcel.readSheet(0).headRowNumber(1).registerReadListener(new AnalysisEventListener<Map<Integer, String>>(){
+
+   			@Override
+			public void invoke(Map<Integer, String> data, AnalysisContext context) {
+   				Integer rowIndex = context.readRowHolder().getRowIndex();
+   				int colIndex = 0;
+   				String a0101 = fn1.apply(data.get(colIndex++));//姓名
+   				String a0184 = fn1.apply(data.get(colIndex++));//身份证
+   				if(a0184Map.get(a0184)==null||!a0184Map.get(a0184).getA0101().equals(a0101)) {
+   					return;
+   				}
+   				String a01e163 = data.get(colIndex++);//干部类别
+   				String a01e165 = data.get(colIndex++);//生长类别
+   				String a01e170 = data.get(colIndex++);//现消防救援衔级
+   				String a01e164 = fn1.apply(data.get(colIndex++));//档次
+   				String a01e205 = data.get(colIndex++);//集体转制人员
+   				String a01e161 = fn2.apply(data.get(colIndex++));//入伍时间
+   				String a01e162 = fn2.apply(data.get(colIndex++));//任干时间
+   				String a0187a = data.get(colIndex++);//专业特长
+   				String a0000 = a0184Map.get(a0184).getA0000();
+   				A01E a01e = hbSession.get(A01E.class, a0000);
+   				if(a01e==null) {
+   					a01e = new A01E();
+   					a01e.setA0000(a0000);
+   					hbSession.save(a01e);
+   				}
+   				//干部类别a01e163,ZB125_YJB
+   				a01e163 = sysCodeUtil.getCodeValue("ZB125_YJB", a01e163);
+   				a01e.setA01E163(a01e163);
+   				
+   				//生长类别a01e165,A01014_YJB
+   				a01e165 = sysCodeUtil.getCodeValue("A01014_YJB", a01e165);
+   				a01e.setA01E165(a01e165);
+   				
+   				//现衔级a01e170,A01002_YJB
+   				a01e170 = sysCodeUtil.getCodeValue("A01002_YJB", a01e170);
+   				a01e.setA01E170(a01e170);
+   				
+   				//档次a01e164.value
+   				a01e.setA01E164(a01e164);
+   				
+   				//a01e205 集体转制人员  是否
+   				a01e205 = sysCodeUtil.getCodeValue("YESNO", a01e205);
+   				a01e.setA01E205(a01e205);
+   				//入伍时间a01e161
+   				a01e.setA01E161(a01e161);
+   				//任干时间a01e162
+   				a01e.setA01E162(a01e162);
+   				
+   				hbSession.update(a01e);
+   				hbSession.flush();
+   				
+   				String userId = "";
+				try {
+					userId = currentUserService.getCurrentUserId();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				A01 a01 = hbSession.get(A01.class, a0000);
+   				a01.setXgr(userId); // 修改人(存id)
+   		        a01.setXgsj(new Date(System.currentTimeMillis())); // 修改时间
+   		        //专业特长f_rmb1.a0187a ZZGB153
+   		        a0187a = sysCodeUtil.getCodeValue("ZZGB153", a0187a);
+   		        a01.setA0187a(a0187a);
+   		        hbSession.update(a01);
+   		        hbSession.flush();
+			}
+
+			@Override
+			public void invokeHead(Map<Integer, CellData> headMap, AnalysisContext context) {
+				//System.out.println(headMap);
+			}
+
+			@Override
+			public void doAfterAllAnalysed(AnalysisContext context) {
+				//System.out.println("2、"+context);
+
+			}
+
+   		}).autoTrim(true).build();
+        
+        ReadSheet sheet2 = EasyExcel.readSheet(1).headRowNumber(1).registerReadListener(new AnalysisEventListener<Map<Integer, String>>(){
+
+        	String a0000_cache = "";
+   			@Override
+			public void invoke(Map<Integer, String> data, AnalysisContext context) {
+   				Integer rowIndex = context.readRowHolder().getRowIndex();
+   				int colIndex = 0;
+   				String a0101 = fn1.apply(data.get(colIndex++));//姓名
+   				String a0184 = fn1.apply(data.get(colIndex++));//身份证
+   				if(a0184Map.get(a0184)==null||!a0184Map.get(a0184).getA0101().equals(a0101)) {
+   					return;
+   				}
+   				String a28202 = fn1.apply(data.get(colIndex++));//专业技术任职资格等级
+   				a28202 = sysCodeUtil.getCodeValue("A0602_YJB", a28202);
+   				String a28201 = fn1.apply(data.get(colIndex++));//专业方向
+   				a28201 = sysCodeUtil.getCodeValue("A0601_YJB", a28201);
+   				String a28204 = fn2.apply(data.get(colIndex++));//任期起算时间
+   				String a28214 = fn2.apply(data.get(colIndex++));//任期结束时间
+   				String a28217 = fn2.apply(data.get(colIndex++));//初评时间
+   				String a0000 = a0184Map.get(a0184).getA0000();
+   				
+   				A282 a282 = new A282();
+   				a282.setA28202(a28202);
+   				a282.setA28201(a28201);
+   				a282.setA28204(a28204);
+   				a282.setA28214(a28214);
+   				a282.setA28217(a28217);
+   				//新增
+   				a282.setA0000(a0000);
+				a282.setA28200(UUIDGenerator.generate());
+   				//a282.setA28292(new Timestamp(System.currentTimeMillis()+i));
+   				//System.out.println(a282.getA28292());
+   				//第一条输出
+   				if(!a0000_cache.equals(a0000)) {
+   					a0000_cache = a0000;
+   					hbSession.executeUpdate("update a282 set A28213='0' where a0000=?",new Object[] {a0000});
+   					a282.setA28213("1");
+   					A01E a01e = hbSession.get(A01E.class, a0000);
+   					a01e.setA01E203(a282.getA28202());
+   					//专业方向
+   					a01e.setA01E206(a282.getA28201());
+   					hbSession.save(a01e);
+   				}else {
+   					a282.setA28213("0");
+   				}
+   				
+   				hbSession.save(a282);
+
+			}
+
+			@Override
+			public void invokeHead(Map<Integer, CellData> headMap, AnalysisContext context) {
+				//System.out.println(headMap);
+			}
+
+			@Override
+			public void doAfterAllAnalysed(AnalysisContext context) {
+				//System.out.println("2、"+context);
+
+			}
+
+   		}).autoTrim(true).build();
+
+        excelReader.read(sheet1,sheet2);
+        excelReader.finish();
+		
+//		EasyExcel.read(file.getInputStream(), new AnalysisEventListener<Map<Integer, String>>(){
+//
+//   			@Override
+//			public void invoke(Map<Integer, String> data, AnalysisContext context) {
+//   				Integer rowIndex = context.readRowHolder().getRowIndex();
+//   				System.out.println(rowIndex);
+//   				if(rowIndex>1) {
+//   					
+//   				}
+//
+//			}
+//
+//
+//			@Override
+//			public void invokeHead(Map<Integer, CellData> headMap, AnalysisContext context) {
+//				//System.out.println(headMap);
+//			}
+//
+//
+//			@Override
+//			public void doAfterAllAnalysed(AnalysisContext context) {
+//				//System.out.println("2、"+context);
+//
+//			}
+//
+//   		}).sheet(0).autoTrim(true).doRead();
+		
+	}
+
+
+
+
+
+
+
+
+
+
