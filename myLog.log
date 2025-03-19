@@ -18120,3 +18120,148 @@ from ALL_tab_cols t ,
 2025-03-19 14:40:59,687 [main] INFO me.zoulei.Config - 读取hfree.ini配置
 2025-03-19 14:40:59,692 [main] INFO me.zoulei.Config - 资源目录已经存在。资源包括图标和4个公共类。
 2025-03-19 14:40:59,692 [main] INFO me.zoulei.Config - 检测配置完成。
+2025-03-19 15:28:21,105 [main] INFO me.zoulei.Config - D:\workspace2025\hfree-m
+2025-03-19 15:28:21,109 [main] INFO me.zoulei.Config - 检查配置信息...
+2025-03-19 15:28:21,109 [main] INFO me.zoulei.Config - dsProp目录已存在，用于放数据源配置文件
+2025-03-19 15:28:21,109 [main] INFO me.zoulei.Config - 读取hfree.ini配置
+2025-03-19 15:28:21,114 [main] INFO me.zoulei.Config - 资源目录已经存在。资源包括图标和4个公共类。
+2025-03-19 15:28:21,114 [main] INFO me.zoulei.Config - 检测配置完成。
+2025-03-19 15:28:27,158 [main] INFO me.zoulei.Config - D:\workspace2025\hfree-m
+2025-03-19 15:28:27,159 [main] INFO me.zoulei.Config - 检查配置信息...
+2025-03-19 15:28:27,159 [main] INFO me.zoulei.Config - dsProp目录已存在，用于放数据源配置文件
+2025-03-19 15:28:27,159 [main] INFO me.zoulei.Config - 读取hfree.ini配置
+2025-03-19 15:28:27,162 [main] INFO me.zoulei.Config - 资源目录已经存在。资源包括图标和4个公共类。
+2025-03-19 15:28:27,162 [main] INFO me.zoulei.Config - 检测配置完成。
+2025-03-19 15:37:46,779 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 获取表信息--
+select c.TABLE_NAME, 
+         c.COMMENTS TABLE_COMMENT,
+         pk.cs,pk.constraint_name
+    from all_tab_comments c, 
+         all_tables u,
+         (
+     	 select listagg(cu.COLUMN_NAME,',') within group(order by cu.position) cs,au.constraint_name,au.table_name
+          from ALL_cons_columns cu, ALL_constraints au
+         where cu.constraint_name = au.constraint_name
+           and au.constraint_type = 'P'
+           and au.table_name = cu.table_name
+           and cu.OWNER = au.OWNER
+           and cu.owner = upper('HY_ZGGL_GWY')
+   		 group by au.table_name,au.constraint_name            
+         ) pk
+   where c.OWNER=u.OWNER 
+     and c.TABLE_NAME=u.TABLE_NAME 
+     and c.OWNER = upper('HY_ZGGL_GWY') 
+     and c.TABLE_NAME=pk.TABLE_NAME(+)
+ and u.TABLE_NAME in('CZ00','CZ00_RECORD','CZ01','CZ02','CZ03','CZ04','CZ05','CZ06','CZ07','CZ08','CZ09','CZ10','CZ11','CZ12','CZ13','CZ14','CZ15','CZ16','CZ17','CZ18','CZ19','CZ20','CZ21','CZYJS') order by u.TABLE_NAME 
+2025-03-19 15:37:46,957 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 获取字段信息--
+select /*+VIEW_PULLUP_FLAG(1)*/t.TABLE_NAME,t.column_name,
+       c.comments column_comment,
+       data_type,
+       nvl2(t.DATA_PRECISION,t.DATA_PRECISION||nvl2(t.DATA_SCALE,','||t.DATA_SCALE,''),data_length||'') data_length,
+t.DATA_DEFAULT COLUMN_DEFAULT,t.NULLABLE
+from ALL_tab_cols t ,
+       ALL_col_comments c
+      
+ where t.TABLE_NAME = c.table_name
+   and t.COLUMN_NAME = c.column_name
+   and t.owner = c.SCHEMA_NAME
+   and t.owner = upper('HY_ZGGL_GWY')
+   and t.TABLE_NAME in (select TABLE_NAME from all_tables where OWNER = upper('HY_ZGGL_GWY')) 
+ and t.TABLE_NAME in('CZ00','CZ00_RECORD','CZ01','CZ02','CZ03','CZ04','CZ05','CZ06','CZ07','CZ08','CZ09','CZ10','CZ11','CZ12','CZ13','CZ14','CZ15','CZ16','CZ17','CZ18','CZ19','CZ20','CZ21','CZYJS')   ORDER BY t.TABLE_NAME,t.COLUMN_ID
+2025-03-19 15:37:47,841 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：1 CZ00
+2025-03-19 15:37:47,841 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：2 CZ00_RECORD
+2025-03-19 15:37:47,842 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：3 CZ01
+2025-03-19 15:37:47,843 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：4 CZ02
+2025-03-19 15:37:47,854 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：5 CZ03
+2025-03-19 15:37:47,857 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：6 CZ04
+2025-03-19 15:37:47,859 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：7 CZ05
+2025-03-19 15:37:47,864 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：8 CZ06
+2025-03-19 15:37:47,865 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：9 CZ07
+2025-03-19 15:37:47,868 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：10 CZ08
+2025-03-19 15:37:47,870 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：11 CZ09
+2025-03-19 15:37:47,872 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：12 CZ10
+2025-03-19 15:37:47,873 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：13 CZ11
+2025-03-19 15:37:47,875 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：14 CZ12
+2025-03-19 15:37:47,877 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：15 CZ13
+2025-03-19 15:37:47,878 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：16 CZ14
+2025-03-19 15:37:47,880 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：17 CZ15
+2025-03-19 15:37:47,881 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：18 CZ16
+2025-03-19 15:37:47,882 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：19 CZ17
+2025-03-19 15:37:47,883 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：20 CZ18
+2025-03-19 15:37:47,883 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：21 CZ19
+2025-03-19 15:37:47,884 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：22 CZ20
+2025-03-19 15:37:47,885 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：23 CZ21
+2025-03-19 15:37:47,885 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：24 CZYJS
+2025-03-19 15:37:47,886 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 数据生成后统一添加合并单元格
+2025-03-19 15:37:47,903 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 合并单元格结束
+2025-03-19 15:37:47,903 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 设置列宽
+2025-03-19 15:45:43,114 [main] INFO me.zoulei.Config - D:\workspace2025\hfree-m
+2025-03-19 15:45:43,115 [main] INFO me.zoulei.Config - 检查配置信息...
+2025-03-19 15:45:43,115 [main] INFO me.zoulei.Config - dsProp目录已存在，用于放数据源配置文件
+2025-03-19 15:45:43,116 [main] INFO me.zoulei.Config - 读取hfree.ini配置
+2025-03-19 15:45:43,119 [main] INFO me.zoulei.Config - 资源目录已经存在。资源包括图标和4个公共类。
+2025-03-19 15:45:43,119 [main] INFO me.zoulei.Config - 检测配置完成。
+2025-03-19 15:46:38,178 [main] INFO me.zoulei.Config - D:\workspace2025\hfree-m
+2025-03-19 15:46:38,182 [main] INFO me.zoulei.Config - 检查配置信息...
+2025-03-19 15:46:38,182 [main] INFO me.zoulei.Config - dsProp目录已存在，用于放数据源配置文件
+2025-03-19 15:46:38,182 [main] INFO me.zoulei.Config - 读取hfree.ini配置
+2025-03-19 15:46:38,185 [main] INFO me.zoulei.Config - 资源目录已经存在。资源包括图标和4个公共类。
+2025-03-19 15:46:38,185 [main] INFO me.zoulei.Config - 检测配置完成。
+2025-03-19 15:47:07,965 [main] INFO me.zoulei.Config - D:\workspace2025\hfree-m
+2025-03-19 15:47:07,966 [main] INFO me.zoulei.Config - 检查配置信息...
+2025-03-19 15:47:07,967 [main] INFO me.zoulei.Config - dsProp目录已存在，用于放数据源配置文件
+2025-03-19 15:47:07,967 [main] INFO me.zoulei.Config - 读取hfree.ini配置
+2025-03-19 15:47:07,973 [main] INFO me.zoulei.Config - 资源目录已经存在。资源包括图标和4个公共类。
+2025-03-19 15:47:07,973 [main] INFO me.zoulei.Config - 检测配置完成。
+2025-03-19 15:48:40,091 [main] INFO me.zoulei.Config - D:\workspace2025\hfree-m
+2025-03-19 15:48:40,092 [main] INFO me.zoulei.Config - 检查配置信息...
+2025-03-19 15:48:40,093 [main] INFO me.zoulei.Config - dsProp目录已存在，用于放数据源配置文件
+2025-03-19 15:48:40,093 [main] INFO me.zoulei.Config - 读取hfree.ini配置
+2025-03-19 15:48:40,097 [main] INFO me.zoulei.Config - 资源目录已经存在。资源包括图标和4个公共类。
+2025-03-19 15:48:40,097 [main] INFO me.zoulei.Config - 检测配置完成。
+2025-03-19 15:49:51,967 [main] INFO me.zoulei.Config - D:\workspace2025\hfree-m
+2025-03-19 15:49:51,968 [main] INFO me.zoulei.Config - 检查配置信息...
+2025-03-19 15:49:51,968 [main] INFO me.zoulei.Config - dsProp目录已存在，用于放数据源配置文件
+2025-03-19 15:49:51,968 [main] INFO me.zoulei.Config - 读取hfree.ini配置
+2025-03-19 15:49:51,971 [main] INFO me.zoulei.Config - 资源目录已经存在。资源包括图标和4个公共类。
+2025-03-19 15:49:51,971 [main] INFO me.zoulei.Config - 检测配置完成。
+2025-03-19 15:50:17,991 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 获取表信息--
+select c.TABLE_NAME, 
+         c.COMMENTS TABLE_COMMENT,
+         pk.cs,pk.constraint_name
+    from all_tab_comments c, 
+         all_tables u,
+         (
+     	 select listagg(cu.COLUMN_NAME,',') within group(order by cu.position) cs,au.constraint_name,au.table_name
+          from ALL_cons_columns cu, ALL_constraints au
+         where cu.constraint_name = au.constraint_name
+           and au.constraint_type = 'P'
+           and au.table_name = cu.table_name
+           and cu.OWNER = au.OWNER
+           and cu.owner = upper('HY_GWYGL_BD')
+   		 group by au.table_name,au.constraint_name            
+         ) pk
+   where c.OWNER=u.OWNER 
+     and c.TABLE_NAME=u.TABLE_NAME 
+     and c.OWNER = upper('HY_GWYGL_BD') 
+     and c.TABLE_NAME=pk.TABLE_NAME(+)
+ and u.TABLE_NAME in('A01') order by u.TABLE_NAME 
+2025-03-19 15:50:18,108 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 获取字段信息--
+select /*+VIEW_PULLUP_FLAG(1)*/t.TABLE_NAME,t.column_name,
+       c.comments column_comment,
+       data_type,
+       nvl2(t.DATA_PRECISION,t.DATA_PRECISION||nvl2(t.DATA_SCALE,','||t.DATA_SCALE,''),data_length||'') data_length,
+t.DATA_DEFAULT COLUMN_DEFAULT,t.NULLABLE
+from ALL_tab_cols t ,
+       ALL_col_comments c
+      
+ where t.TABLE_NAME = c.table_name
+   and t.COLUMN_NAME = c.column_name
+   and t.owner = c.SCHEMA_NAME
+   and t.owner = upper('HY_GWYGL_BD')
+   and t.TABLE_NAME in (select TABLE_NAME from all_tables where OWNER = upper('HY_GWYGL_BD')) 
+ and t.TABLE_NAME in('A01')   ORDER BY t.TABLE_NAME,t.COLUMN_ID
+2025-03-19 15:50:18,987 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 生成表设计文档：1 A01
+2025-03-19 15:50:19,003 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 数据生成后统一添加合并单元格
+2025-03-19 15:50:19,011 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 合并单元格结束
+2025-03-19 15:50:19,011 [AWT-EventQueue-0] INFO me.zoulei.expDesign.excel.DatabaseDocExporter - 设置列宽

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -30,7 +31,9 @@ import me.zoulei.MainApp;
 import me.zoulei.backend.jdbc.datasource.DataSource;
 import me.zoulei.backend.jdbc.utils.CommQuery;
 import me.zoulei.backend.templete.grid.TableMetaDataConfig;
+import me.zoulei.dbc.ui.components.MainPanel;
 import me.zoulei.expDesign.excel.DatabaseDocExporter;
+import me.zoulei.expDesign.excel.TableSelectUI;
 import me.zoulei.gencode.Gencode;
 import me.zoulei.ui.components.south.FlowComponentCenter;
 import me.zoulei.ui.components.south.FlowSearchComponentNorth;
@@ -112,7 +115,7 @@ public class SearchComponent {
 		JComboBox<Item> cbx = new JComboBox<Item>(items);
 		//设置下拉最多显示的选项
 		cbx.setMaximumRowCount(30);
-		cbx.setPreferredSize(new Dimension(1000, 35));
+		cbx.setPreferredSize(new Dimension(950, 35));
 		cbx.setFont(font);
 		
 		
@@ -218,6 +221,25 @@ public class SearchComponent {
             }
         });
 		
+		
+		
+		JButton configButton = new JButton("选表");
+		configButton.setFont(font);
+		configButton.setPreferredSize(new Dimension(40, 30));
+		north2.add(configButton);
+		configButton.setBorder(MainApp.lineBorder);
+        configButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	try {
+					JDialog tableSelectUI = new TableSelectUI(items);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(MainPanel.mainFrame, "设置失败："+e1.getMessage());
+					e1.printStackTrace();
+					
+				}
+            }
+        });
 		
 		
 		
