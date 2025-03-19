@@ -26,9 +26,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/Dm7-18-Jdbc.jar"/>
-	<classpathentry kind="lib" path="lib/DmDialect-for-hibernate5.3-8.1.1.49.jar"/>
-	<classpathentry kind="lib" path="lib/lombok-1.18.24.jar"/>
-	<classpathentry kind="lib" path="lib/ojdbc6.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hfree-lib"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

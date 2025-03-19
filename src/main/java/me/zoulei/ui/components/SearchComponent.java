@@ -2,12 +2,14 @@ package me.zoulei.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,7 @@ import me.zoulei.MainApp;
 import me.zoulei.backend.jdbc.datasource.DataSource;
 import me.zoulei.backend.jdbc.utils.CommQuery;
 import me.zoulei.backend.templete.grid.TableMetaDataConfig;
+import me.zoulei.expDesign.excel.DatabaseDocExporter;
 import me.zoulei.gencode.Gencode;
 import me.zoulei.ui.components.south.FlowComponentCenter;
 import me.zoulei.ui.components.south.FlowSearchComponentNorth;
@@ -109,13 +112,10 @@ public class SearchComponent {
 		JComboBox<Item> cbx = new JComboBox<Item>(items);
 		//设置下拉最多显示的选项
 		cbx.setMaximumRowCount(30);
-		cbx.setPreferredSize(new Dimension(1100, 35));
+		cbx.setPreferredSize(new Dimension(1000, 35));
 		cbx.setFont(font);
 		
-		//生成数据库配置及代码按钮
-		JButton genCodeBtn = new JButton("生成代码");
-		genCodeBtn.setFont(font);
-		genCodeBtn.setPreferredSize(new Dimension(90, 35));
+		
 		//选择模式后事件  查询表名，将选择表名的下拉框选项重新设置
 		cbx2.addActionListener(new ActionListener() {
 			@Override
@@ -159,6 +159,10 @@ public class SearchComponent {
 		}
 		
 		
+		//生成数据库配置及代码按钮
+		JButton genCodeBtn = new JButton("生成代码");
+		genCodeBtn.setFont(font);
+		genCodeBtn.setPreferredSize(new Dimension(90, 35));
 		north2.add(genCodeBtn);
 		genCodeBtn.addActionListener(new ActionListener() {
 	         public void actionPerformed(ActionEvent e) {     
@@ -181,6 +185,7 @@ public class SearchComponent {
 		
 		
 		JCheckBox flowCheckBox = new JCheckBox("流程配置",false);
+		flowCheckBox.setEnabled(false);
 		north2.add(flowCheckBox);
 		flowCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -212,6 +217,34 @@ public class SearchComponent {
                 
             }
         });
+		
+		
+		
+		
+		//导出文档
+		JButton expBtn = new JButton("导出");
+		expBtn.setFont(font);
+		expBtn.setPreferredSize(new Dimension(40, 30));
+		north2.add(expBtn);
+		expBtn.addActionListener(new ActionListener() {
+	         public void actionPerformed(ActionEvent e) {     
+	        	 try {
+	        		 expBtn.setEnabled(false);
+	        		 String f_gendir = DatabaseDocExporter.export((String) cbx2.getSelectedItem());
+	        		 expBtn.setEnabled(true);
+	        		 //打开文件夹
+	        		 Desktop desktop = Desktop.getDesktop();
+	        		 desktop.open(new File(f_gendir));
+				} catch (Exception e1) {
+					expBtn.setEnabled(true);
+					JOptionPane.showMessageDialog(MainApp.mainFrame, e1+"："+e1.getMessage());   
+					e1.printStackTrace();
+				}
+	            
+	         }
+	    });
+		
+		expBtn.setBorder(MainApp.lineBorder);
 		
 	}
 	//查询表
