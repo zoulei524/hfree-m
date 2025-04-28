@@ -141,6 +141,7 @@ public class ${entity}Excel {
 		
 		//表格列参数  宽度width，是否数字type，水平位置align，列名colname，列名描述label
 		String tableConfigStr = "${config.excelCFG}";
+		
 		JSONArray tableConfig = JSON.parseArray(tableConfigStr);
 		//新建excel工作簿
 		Workbook workbook = new XSSFWorkbook();

@@ -38,7 +38,7 @@ public class MainApp {
 		new Config();
 		
 		
-		mainFrame = new JFrame("odin7c开发辅助工具");
+		mainFrame = new JFrame("开发辅助工具");
 		mainFrame.setSize(MainApp.MAIN_WIDTH, MainApp.MAIN_HEIGHT);
 		//mainFrame.setLocation(20, 20);
 		mainFrame.setLocationRelativeTo(null);

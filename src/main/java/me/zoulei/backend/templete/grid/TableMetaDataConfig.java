@@ -36,6 +36,7 @@ public class TableMetaDataConfig {
 	private String rules;
 	/**导出excel的配置信息  在生成表格vue代码的时候生成该信息*/
 	private String excelCFG;
+	private String excelCFG2;
 	
 	/**首字母大写的主键*/
 	private String pkU="";

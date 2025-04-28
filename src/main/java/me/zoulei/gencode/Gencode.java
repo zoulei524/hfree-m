@@ -79,6 +79,8 @@ public class Gencode {
 		GenOther other = new GenOther(config);
 		codemap.put("    other     ", new String[] {other.getCode(), SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT});
 		
+		codemap.put("    json     ", new String[] {config.getExcelCFG2(), SyntaxConstants.SYNTAX_STYLE_JSON});
+		
 //		2024年2月1日14:50:42
 //		取消dep.ftl
 //		用到的图标和公共类都放在source.zip下，首次打开软件程序，将该包拷贝到程序目录下。

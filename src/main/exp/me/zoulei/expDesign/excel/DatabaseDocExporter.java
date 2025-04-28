@@ -382,7 +382,7 @@ public class DatabaseDocExporter {
 		log.info("设置列宽");
 		// 设置列宽  3.75 11.5  (columnWidths[i] * 256) / 9 - 0.702 * 256   Double.valueOf(width)/8*255.86+184.27
 		//columnWidths[i] * 256
-		//3.75  11.5  9.25 3.25  4.5  3.63 3.88 11.75  13.5
+		//{0  3.75  11.5  9.25 3.25  4.5  3.63 3.88 11.75  13.5}
 		//400
         double[] columnWidths = {0, 1125, 3100, 2525, 1000, 1300, 1100, 1150, 3170,3600};
         for (int i = 0; i < columnWidths.length; i++) {
@@ -467,9 +467,25 @@ public class DatabaseDocExporter {
 	
 	
 	
+	public static int convertExcelWidthToPoi(double excelWidth) {
+	    // 核心转换逻辑
+	    double poiWidth = (excelWidth * 7 + 5) / 7 * 256;
+	    return (int) Math.round(excelWidth * 256 + 160);
+	    //return (int) Math.round(poiWidth);
+	}
 	
-	
-	
+	public static void main(String[] args) {
+		// 设置列宽  3.75 11.5  (columnWidths[i] * 256) / 9 - 0.702 * 256   Double.valueOf(width)/8*255.86+184.27
+				//columnWidths[i] * 256
+				//{0  3.75  11.5  9.25 3.25  4.5  3.63 3.88 11.75  13.5}
+				//400
+		double[] excelWidths = {0 , 3.75 , 11.5,  9.25 ,3.25  ,4.5 , 3.63, 3.88 ,11.75,  13.5};
+		double[] columnWidths = {0, 1125, 3100, 2525, 1000, 1300, 1100, 1150, 3170,3600};
+		for (int i = 0; i < excelWidths.length; i++) {
+			System.out.println(convertExcelWidthToPoi(excelWidths[i]));
+		}
+		
+	}
 	
 }
 
